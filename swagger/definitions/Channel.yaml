@@ -1,0 +1,14 @@
+Channel:
+  type: object
+  required:
+    - name
+    - link
+    - status
+  properties:
+    name:
+      type: string
+    link:
+      type: string
+    status:
+      type: number
+      description: 'INACTIVE: 0, ACTIVE: 1'

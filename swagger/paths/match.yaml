@@ -1,70 +1,71 @@
-quizzes:
+matches:
   post:
     tags:
-      - quizzes
-    description:  Create a quiz
+      - matches
+    description:  Create a Match
+    consumes:
+      - application/json
     produces:
       - application/json
     parameters:
       - name: data
-        description:  Quiz Object
+        description:  Match Object
         type: object
         in: body
         required: true
         schema:
-          $ref: '#definitions/Quiz'
+          $ref: '#/definitions/Match'
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Quiz'
-
+          $ref: '#/definitions/Match'
   get:
     tags:
-      - quizzes
-    description:  Get Quiz
+      - matches
+    description:  Get Match
     parameters:
       - name: id
         in: query
-        description:  Quiz ID
+        description:  Match ID
         type: string
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Quiz'
-quizById:
+          $ref: '#/definitions/Match'
+matchById:
   put:
     tags:
-      - quizzes
-    description:  Edit Quiz
+      - matches
+    description:  Edit Match
     produces:
       - application/json
     parameters:
       - name: id
-        description:  Quiz ID
+        description:  Match ID
         required: true
         in: path
         type: string
       - name: data
-        description:  Quiz Object
+        description:  Match Object
         type: object
         in: body
         required: true
         schema:
-          $ref: '#/definitions/Quiz'
+          $ref: '#/definitions/Match'
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Quiz'
+          $ref: '#/definitions/Match'
   delete:
     tags:
-      - quizzes
-    description:  Delete Quiz
+      - matches
+    description:  Delete Match
     parameters:
       - name: id
-        description:  Quiz ID
+        description:  Match ID
         required: true
         in: path
         type: string
@@ -72,7 +73,7 @@ quizById:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Quiz'
+          $ref: '#/definitions/Match'
 
 
 

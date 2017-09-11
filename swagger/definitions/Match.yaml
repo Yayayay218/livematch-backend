@@ -1,0 +1,28 @@
+Match:
+  type: object
+  required:
+    - name
+    - description
+    - status
+    - isPremium
+    - channels
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+    date:
+      type: date
+    time:
+      type: dateTime
+    status:
+      type: number
+      description: 'UNPUBLISHED: 0, POSTPONED: 1, UPCOMING: 2, LIVE: 3'
+    isPremium:
+      type: boolean
+    channels:
+      type: array
+      xml:
+        name: "channels"
+      items:
+        $ref: './Channel.yaml#/Channel'

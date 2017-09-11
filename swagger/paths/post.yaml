@@ -1,7 +1,7 @@
-questions:
+posts:
   post:
     tags:
-      - questions
+      - posts
     description:  Create a question
     produces:
       - application/json
@@ -12,16 +12,16 @@ questions:
         in: body
         required: true
         schema:
-          $ref: '#definitions/Question'
+          $ref: '#definitions/Post'
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Question'
+          $ref: '#/definitions/Post'
 
   get:
     tags:
-      - questions
+      - posts
     description:  Get question
     parameters:
       - name: id
@@ -32,11 +32,11 @@ questions:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Question'
-questionById:
+          $ref: '#/definitions/Post'
+postById:
   put:
     tags:
-      - questions
+      - posts
     description:  Edit question
     produces:
       - application/json
@@ -52,15 +52,15 @@ questionById:
         in: body
         required: true
         schema:
-          $ref: '#/definitions/Question'
+          $ref: '#/definitions/Post'
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Question'
+          $ref: '#/definitions/Post'
   delete:
     tags:
-      - questions
+      - posts
     description:  Delete question
     parameters:
       - name: id
@@ -72,7 +72,7 @@ questionById:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Question'
+          $ref: '#/definitions/Post'
 
 
 

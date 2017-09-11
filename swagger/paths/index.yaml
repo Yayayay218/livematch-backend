@@ -1,10 +1,10 @@
-/quizzes:
-  $ref: quiz.yaml#/quizzes
-/quizzes/{id}:
-  $ref: quiz.yaml#/quizById
-/questions:
-  $ref: question.yaml#/questions
-/questions/{id}:
-  $ref: question.yaml#/questionById
+/matches:
+  $ref: match.yaml#/matches
+/matches/{id}:
+  $ref: match.yaml#/matchById
+/posts:
+  $ref: post.yaml#/posts
+/posts/{id}:
+  $ref: post.yaml#/postById
 /files:
   $ref: file.yaml#/files

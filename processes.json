@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "merge_logs"  : true,
-    "name"        : "quiz",
+    "name"        : "livematch",
     "script"      : "./bin/www",
     "out_file"    : "out.log",
     "error_file"  : "error.log", 

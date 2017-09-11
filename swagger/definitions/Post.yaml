@@ -1,0 +1,30 @@
+Post:
+  type: object
+  required:
+    - name
+    - description
+    - link
+    - label
+    - status
+    - isRequired
+    - match
+    - type
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+    link:
+      type: string
+    label:
+      type: string
+    status:
+      type: number
+      description:  "UNPUBLISHED: 0, PUBLISHED: 1"
+    isRequired:
+      type: boolean
+    match:
+      type: string
+    type:
+      type: number
+      description:  "FULL MATCH: 0, HIGHLIGHT: 1"

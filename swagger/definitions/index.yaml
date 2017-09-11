@@ -1,4 +1,4 @@
-Quiz:
-  $ref: ./Quiz.yaml#/Quiz
-Question:
-  $ref: ./Question.yaml#/Question
+Match:
+  $ref: ./Match.yaml#/Match
+Post:
+  $ref: ./Post.yaml#/Post

@@ -12,10 +12,10 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: "mongodb://mongo:27017/quiz"
+      DATABASE_URL: "mongodb://mongo:27017/livematch"
     volumes:
-      - .:/home/app/quiz-backend
-      - /home/app/quiz-backend/node_modules
+      - .:/home/app/livematch-backend
+      - /home/app/livematch-backend/node_modules
     depends_on:
       - mongo
   mongo:
