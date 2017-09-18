@@ -1,0 +1,14 @@
+Notification:
+  type: object
+  required:
+    - token
+    - match
+    - status
+  properties:
+    token:
+      type: string
+    match:
+      type: string
+    status:
+      type: number
+      description: 'LIVE: 0, REPLAY: 1, HIGHLIGHT: 2'

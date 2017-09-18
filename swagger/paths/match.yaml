@@ -29,6 +29,11 @@ matches:
         in: query
         description:  Match ID
         type: string
+
+      - name: status
+        in: query
+        description:  Status
+        type: string
     responses:
       200:
         description:  OK

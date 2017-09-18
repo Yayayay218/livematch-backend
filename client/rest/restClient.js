@@ -31,7 +31,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
                     ...params.filter,
                     sort: sort,
                     page: page,
-                    limit: perPage
+                    limit: perPage,
                 };
                 url = `${apiUrl}/${resource}?${fetchUtils.queryParameters(query)}`;
                 break;

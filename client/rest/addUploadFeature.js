@@ -14,7 +14,7 @@ const uploadFile = (params) => {
                         ...params,
                         data: {
                             ...params.data,
-                            featuredImg: file,
+                            coverPhoto: file,
                         },
                     };
                     resolve(tmp)
@@ -57,7 +57,7 @@ const uploadAnswer = (params) => {
 
 const addUploadCapabilities = requestHandler => (type, resource, params) => {
     if ((type === 'UPDATE' || type === "CREATE") &&
-        (resource === 'quizzes' || resource === 'questions' || resource === 'results')) {
+        (resource === 'matches' || resource === 'fullMatches' || resource === 'highlights')) {
         console.log("addUploadCapabilities: ", params.data);
         if (Object.prototype.toString.call(params.data.file) === '[object Array]') {
             console.log("addUploadCapabilities length: ", params.data.file.length);

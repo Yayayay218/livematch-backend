@@ -12,10 +12,9 @@ services:
     # command: bash
     environment:
       NODE_ENV: production
-      DATABASE_URL: "mongodb://mongo:27017/quiz"
+      DATABASE_URL: "mongodb://mongo:27017/livematch"
     volumes:
-      - /home/app/quiz-backend/uploads
-      - /root/opt/quiz-frontend:/home/app/quiz-backend/quiz-frontend
+      - /home/app/livematch-backend/uploads
     ports:
       - '3000:3000'
     depends_on:

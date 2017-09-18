@@ -8,3 +8,11 @@
   $ref: post.yaml#/postById
 /files:
   $ref: file.yaml#/files
+/channels:
+  $ref: channel.yaml#/channels
+/channels/{id}:
+  $ref: channel.yaml#/channelById
+/tokens:
+  $ref: token.yaml#/tokens
+/notifications:
+  $ref: notification.yaml#/notifications

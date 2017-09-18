@@ -1,0 +1,37 @@
+tokens:
+  post:
+    tags:
+      - tokens
+    description:  Create a Token
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: data
+        description:  Match Object
+        type: object
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Token'
+    responses:
+      200:
+        description:  OK
+        schema:
+          $ref: '#/definitions/Token'
+  get:
+    tags:
+      - tokens
+    description:  Get Token
+    parameters:
+      - name: id
+        in: query
+        description:  Token ID
+        type: string
+
+    responses:
+      200:
+        description:  OK
+        schema:
+          $ref: '#/definitions/Token'

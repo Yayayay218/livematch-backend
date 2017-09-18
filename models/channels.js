@@ -4,17 +4,8 @@ var mongoosePaginate = require('mongoose-paginate');
 var channelSchema = new mongoose.Schema({
     name: String,
     link: String,
-    status: Number
-});
-
-var matchSchema = new mongoose.Schema({
-    name: String,
-    description: String,
-    date: Date,
-    time: Number,
     status: Number,
-    isRequired: Boolean,
-    // channels: [channelSchema],
+    match: {type: Schema.Types.ObjectId, ref: 'Matches'},
     createdAt: {
         type: Date,
         default: Date.now()
@@ -22,5 +13,5 @@ var matchSchema = new mongoose.Schema({
     updatedAt: Date
 });
 
-matchSchema.plugin(mongoosePaginate);
-mongoose.model('Matches', matchSchema);
+channelSchema.plugin(mongoosePaginate);
+mongoose.model('Channels', channelSchema);

@@ -25,29 +25,24 @@ import {
     NullableBooleanInput
 } from 'admin-on-rest';
 
-import EmbeddedManyInput from './AddNewAnswerButton'
 import {required, minValue, maxValue} from 'admin-on-rest';
 
-export const QuestionList = (props) => (
+export const PostList = (props) => (
     <List {...props}>
         <Datagrid>
-            <ReferenceField label="Quiz" source="quiz._id" reference="quizzes" allowEmpty>
-                <TextField source="title"/>
+            <ReferenceField label="Match" source="match._id" reference="matches" allowEmpty>
+                <TextField source="name"/>
             </ReferenceField>
-            {/*<TextField source="quiz.title" label="Quiz" />*/}
-            <TextField source="title" label="Question's Name"/>
-            <TextField source="type" label="Question's Type"/>
-            {/*<TextField source="result" label="Question's Result"/>*/}
-            <TextField source="createdAt" label="Created At"/>
-            <TextField source="updatedAt" label="Updated At"/>
+            <TextField source="name" label="Post's Name"/>
+            <TextField source="description" label="Post's Type"/>
             <EditButton/>
             <DeleteButton/>
         </Datagrid>
     </List>
 );
 
-//export const QuestionCreate = (props) =>  {return ()}
-export const QuestionCreate = (props) => {
+//export const PostCreate = (props) =>  {return ()}
+export const PostCreate = (props) => {
     return (
         <Create {...props}>
             <TabbedForm>
@@ -67,7 +62,7 @@ export const QuestionCreate = (props) => {
                         <TextInput source="content" label="Answer"/>
                         <NullableBooleanInput source="isCorrect" label="Is Correct?" validate={[required]}/>
                         {/*<ImageInput source="photos" label="Answer's Image" accept="image/*">*/}
-                            {/*<ImageField source="src" title="title"/>*/}
+                        {/*<ImageField source="src" title="title"/>*/}
                         {/*</ImageInput>*/}
                     </EmbeddedManyInput>
                 </FormTab>
@@ -98,11 +93,11 @@ export const ImageParser = v => {
     return v;
 };
 
-const QuestionTitle = ({record}) => {
-    return <span>Question {record ? `"${record.title}"` : ''}</span>;
+const PostTitle = ({record}) => {
+    return <span>Post {record ? `"${record.title}"` : ''}</span>;
 };
-export const QuestionEdit = (props) => (
-    <Edit title={<QuestionTitle/>} {...props}>
+export const PostEdit = (props) => (
+    <Edit title={<PostTitle/>} {...props}>
         <TabbedForm>
             <FormTab label="Information">
                 <TextInput source="title" validate={[required]}/>

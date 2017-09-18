@@ -2,3 +2,9 @@ Match:
   $ref: ./Match.yaml#/Match
 Post:
   $ref: ./Post.yaml#/Post
+Channel:
+  $ref: ./Channel.yaml#/Channel
+Token:
+  $ref: ./Token.yaml#/Token
+Notification:
+  $ref: ./Notification.yaml#/Notification

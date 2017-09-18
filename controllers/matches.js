@@ -1,30 +1,59 @@
 var mongoose = require('mongoose');
+var apn = require('apn');
+
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
 
 var Matches = mongoose.model('Matches');
+var Notifications = mongoose.model('Notifications');
 
 var sendJSONResponse = function (res, status, content) {
     res.status(status);
     res.json(content);
 };
 
-//  Config upload photo
-// var multer = require('multer');
-//
-// var storage = multer.diskStorage({ //multers disk storage settings
-//     destination: function (req, file, cb) {
-//         cb(null, 'uploads/match')
-//     },
-//     filename: function (req, file, cb) {
-//         var datetimestamp = Date.now();
-//         cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
-//     }
-// });
-// var upload = multer({
-//     storage: storage
-// }).single('file');
+var pushNotification = function (name, token) {
+    var apnProvider = new apn.Provider(constant.DEV_OPTS);
+    var note = new apn.Notification();
+
+    note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+    note.badge = 1;
+    note.sound = "default";
+    // note.alert = "\uD83D\uDCE7 \u2709 " + data.alert;
+    note.title = name + ' is now on live. Watch it now!';
+    note.body = name + ' is now on live. Watch it now!';
+    console.log(note);
+    token.forEach(function (token) {
+        apnProvider.send(note, token).then(function (result) {
+            console.log("sent:", result.sent.length);
+            console.log("failed:", result.failed.length);
+            console.log(result.failed);
+        });
+    });
+
+    apnProvider.shutdown();
+};
+
+var getListTokens = function (id, status) {
+    return new Promise(function (resolve, reject) {
+        var token = [];
+        Notifications.find({
+            match: id,
+            status: status
+        }, function (err, data) {
+            if (err)
+                reject(err);
+            else {
+                data.forEach(function (noti) {
+                    token.push(noti.token)
+                });
+                resolve(token);
+            }
+        });
+
+    })
+};
 
 //  POST a match
 module.exports.matchPOST = function (req, res) {
@@ -50,10 +79,16 @@ module.exports.matchGetAll = function (req, res) {
     var query = req.query || {};
     const id = req.query.id;
     delete req.query.id;
+    const status = req.query.status;
+    delete req.query.status;
     if (id)
         query = {
             "_id": {$in: id}
         };
+    else if (status)
+        query = {
+            "status": {$in: status}
+        }
     else
         query = {};
     Matches.paginate(
@@ -130,6 +165,13 @@ module.exports.matchPUT = function (req, res) {
                 success: false,
                 message: "match's not founded"
             });
+        if (match.status == 3)
+            getListTokens(match._id, 0).then(function (data) {
+                pushNotification(match.name, data);
+            }).catch(function (err) {
+                console.log(err);
+            });
+
         return sendJSONResponse(res, HTTPStatus.OK, {
             success: true,
             message: 'Update match successful!',

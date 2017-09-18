@@ -1,0 +1,67 @@
+notifications:
+  post:
+    tags:
+      - notifications
+    description:  Create a Notification
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: data
+        description:  Notification Object
+        type: object
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Notification'
+    responses:
+      200:
+        description:  OK
+        schema:
+          $ref: '#/definitions/Notification'
+  get:
+    tags:
+      - notifications
+    description:  Get Notifications
+    parameters:
+      - name: id
+        in: query
+        description:  Notification ID
+        type: string
+
+      - name: token
+        in: query
+        description:  Token
+        type: string
+
+      - name: match
+        in: query
+        description:  Match
+        type: string
+
+    responses:
+      200:
+        description:  OK
+        schema:
+          $ref: '#/definitions/Notification'
+  delete:
+    tags:
+      - notifications
+    description:  Delete Match
+    parameters:
+      - name: data
+        description:  Match ID
+        required: true
+        in: body
+        type: string
+        schema:
+          $ref: '#/definitions/Notification'
+    responses:
+      200:
+        description:  OK
+        schema:
+          $ref: '#/definitions/Notification'
+
+
+

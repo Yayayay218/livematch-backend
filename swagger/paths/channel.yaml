@@ -1,86 +1,86 @@
-posts:
+channels:
   post:
     tags:
-      - posts
-    description:  Create a question
+      - channels
+    description:  Create a New Channel
     produces:
       - application/json
     parameters:
       - name: data
-        description:  question Object
+        description:  Order object
         type: object
         in: body
         required: true
         schema:
-          $ref: '#definitions/Post'
+          $ref: '#/definitions/Channel'
     responses:
       200:
-        description:  OK
+        description: OK
         schema:
-          $ref: '#/definitions/Post'
-
+          $ref: '#/definitions/Channel'
   get:
     tags:
-      - posts
-    description:  Get question
+      - channels
     parameters:
       - name: id
-        in: query
-        description:  question ID
+        description: Channel Id
         type: string
+        in: query
+
       - name: match
-        in: query
-        description:  Match id
+        description: Match
         type: string
-      - name: status
         in: query
+
+      - name: status
         description:  Status
         type: string
+        in: query
+
     responses:
       200:
-        description:  OK
+        description: OK
         schema:
-          $ref: '#/definitions/Post'
-postById:
-  put:
+          $ref: '#/definitions/Channel'
+
+channelById:
+ put:
     tags:
-      - posts
-    description:  Edit question
+      - channels
+    description: Edit Channel
     produces:
       - application/json
     parameters:
       - name: id
-        description:  question ID
+        description: Channel id
         required: true
         in: path
         type: string
       - name: data
-        description:  question Object
+        description: Order object
         type: object
         in: body
         required: true
         schema:
-          $ref: '#/definitions/Post'
+          $ref: '#/definitions/Channel'
     responses:
       200:
-        description:  OK
+        description: OK
         schema:
-          $ref: '#/definitions/Post'
-  delete:
+          $ref: '#/definitions/Channel'
+
+ delete:
     tags:
-      - posts
-    description:  Delete question
+      - channels
+    description: Delete Channel
     parameters:
       - name: id
-        description:  question ID
+        description: Channel id
         required: true
         in: path
         type: string
     responses:
       200:
-        description:  OK
+        description: OK
         schema:
-          $ref: '#/definitions/Post'
-
-
-
+          $ref: '#/definitions/Channel'

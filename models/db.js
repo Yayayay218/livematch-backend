@@ -45,3 +45,6 @@ process.on('SIGTERM', function () {
 // BRING IN YOUR SCHEMAS & MODELS
 require('./matches');
 require('./posts');
+require('./channels');
+require('./tokens');
+require('./notifications');
