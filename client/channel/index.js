@@ -23,7 +23,7 @@ import {
     BooleanInput,
     ReferenceInput,
     ReferenceField,
-    Filter
+    Filter,
 } from 'admin-on-rest';
 
 import {required} from 'admin-on-rest'
@@ -61,6 +61,8 @@ export const ChannelCreate = (props) => (
                 {id: '0', name: 'inactive'},
                 {id: '1', name: 'active'}
             ]}/>
+            <BooleanInput label="Show Link" source="isShow"/>
+
             <ReferenceInput label="Assign to" source="match" reference="matches" validate={[required]}
                             allowEmpty>
                 <SelectInput optionText="name"/>
@@ -77,14 +79,17 @@ export const ChannelEdit = (props) => (
             <DisabledInput label="Channel Id" source="id"/>
             <TextInput source="name" label="Channel Name" validate={[required]}/>
             <TextInput source="link" validate={[required]}/>
-            <SelectInput source="status" choices={[
-                {id: '0', name: 'inactive'},
-                {id: '1', name: 'active'}
-            ]}/>
+            <BooleanInput label="Show Link" source="isShow"/>
+
             <ReferenceInput label="Assign to" source="match._id" reference="matches" validate={[required]}
                             allowEmpty>
                 <SelectInput optionText="name"/>
             </ReferenceInput>
+            <SelectInput source="status" allowEmpty choices={[
+                {id: '0', name: 'inactive'},
+                {id: '1', name: 'active'}
+            ]}/>
+
         </SimpleForm>
     </Edit>
 );

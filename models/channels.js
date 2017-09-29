@@ -5,6 +5,10 @@ var channelSchema = new mongoose.Schema({
     name: String,
     link: String,
     status: Number,
+    isShow: {
+        type: Boolean,
+        default: false
+    },
     match: {type: Schema.Types.ObjectId, ref: 'Matches'},
     createdAt: {
         type: Date,

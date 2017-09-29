@@ -23,6 +23,8 @@ var pushNotification = function (name, token) {
     // note.alert = "\uD83D\uDCE7 \u2709 " + data.alert;
     note.title = name + ' is now on live. Watch it now!';
     note.body = name + ' is now on live. Watch it now!';
+    note.topic = 'com.astralerapps.livematchHD';
+
     console.log(note);
     token.forEach(function (token) {
         apnProvider.send(note, token).then(function (result) {
@@ -81,6 +83,8 @@ module.exports.matchGetAll = function (req, res) {
     delete req.query.id;
     const status = req.query.status;
     delete req.query.status;
+    var sort = req.query.sort || 'index';
+    delete req.query.sort;
     if (id)
         query = {
             "_id": {$in: id}
@@ -94,7 +98,7 @@ module.exports.matchGetAll = function (req, res) {
     Matches.paginate(
         query,
         {
-            sort: req.query.sort,
+            sort: sort,
             page: Number(req.query.page),
             limit: Number(req.query.limit)
         }, function (err, match) {
@@ -114,6 +118,7 @@ module.exports.matchGetAll = function (req, res) {
         }
     )
 };
+
 module.exports.matchGetOne = function (req, res) {
     Matches.findById(req.params.id, function (err, match) {
         if (err)

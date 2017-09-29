@@ -64,7 +64,7 @@ export const HighlightCreate = (props) => {
                         {id: '0', name: 'unpublished'},
                         {id: '1', name: 'published'}
                     ]}/>
-                    <NullableBooleanInput source="isRequired" label="Premium required" validate={[required]}/>
+                    <BooleanInput source="isRequired" label="Premium required" />
                 </FormTab>
 
                 <FormTab label="Cover Photo">
@@ -97,7 +97,7 @@ export const HighlightEdit = (props) => (
                     {id: '0', name: 'unpublished'},
                     {id: '1', name: 'published'}
                 ]}/>
-                <NullableBooleanInput source="isRequired" label="Premium required" validate={[required]}/>
+                <BooleanInput source="isRequired" label="Premium required" />
             </FormTab>
             <FormTab label="Cover Photo">
                 <ImageField source='coverPhoto' title='title'/>

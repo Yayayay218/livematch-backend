@@ -47,6 +47,10 @@ export const FullMatchList = (props) => (
     </List>
 );
 
+const choices = [
+    {id: '0', name: 'unpublished'},
+    {id: '1', name: 'published'}
+]
 export const FullMatchCreate = (props) => {
     return (
         <Create {...props}>
@@ -60,11 +64,8 @@ export const FullMatchCreate = (props) => {
                                     allowEmpty>
                         <SelectInput optionText="name"/>
                     </ReferenceInput>
-                    <SelectInput source="status" allowEmpty choices={[
-                        {id: '0', name: 'unpublished'},
-                        {id: '1', name: 'published'}
-                    ]}/>
-                    <NullableBooleanInput source="isRequired" label="Premium required" validate={[required]}/>
+                    <SelectInput source="status" allowEmpty choices={choices} optionText="name" optionValue="id"/>
+                    <BooleanInput source="isRequired" label="Premium required" />
                 </FormTab>
 
                 <FormTab label="Cover Photo">
@@ -97,7 +98,7 @@ export const FullMatchEdit = (props) => (
                     {id: '0', name: 'unpublished'},
                     {id: '1', name: 'published'}
                 ]}/>
-                <NullableBooleanInput source="isRequired" label="Premium required" validate={[required]}/>
+                <BooleanInput source="isRequired" label="Premium required" />
             </FormTab>
             <FormTab label="Cover Photo">
                 <ImageField source='coverPhoto' title='title'/>

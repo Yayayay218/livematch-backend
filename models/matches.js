@@ -14,6 +14,7 @@ var matchSchema = new mongoose.Schema({
     time: Number,
     status: Number,
     isRequired: Boolean,
+    index: Number,
     // channels: [channelSchema],
     createdAt: {
         type: Date,
