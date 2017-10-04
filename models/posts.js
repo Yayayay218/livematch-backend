@@ -10,6 +10,10 @@ var postSchema = new mongoose.Schema({
     isRequired: Boolean,
     type: Number,
     coverPhoto: String,
+    isShow: {
+        type: Boolean,
+        default: false
+    },
     match: {type: Schema.Types.ObjectId, ref: 'Matches'},
     createdAt: {
         type: Date,

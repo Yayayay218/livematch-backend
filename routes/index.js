@@ -7,6 +7,13 @@ var postCtrl = require('../controllers/posts');
 var channelCtrl = require('../controllers/channels');
 var notificationCtrl = require('../controllers/notifications');
 var tokenCtrl = require('../controllers/tokens');
+var crypto = require('crypto');
+
+// const secret = 'abcdefg';
+// const hash = crypto.createHmac('sha256', secret)
+//     .update('I love cupcakes')
+//     .digest('hex');
+// console.log(hash);
 
 //  Token APIs
 router.post('/tokens', tokenCtrl.tokenPOST);

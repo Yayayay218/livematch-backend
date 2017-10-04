@@ -19,7 +19,7 @@ var pushNotification = function (name, image, type, token) {
     note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
     note.badge = 1;
     note.sound = "default";
-    note.topic = 'com.astralerapps.livematchHD';
+    note.topic = 'com.astralerapps.livematchios';
     // note.alert = "\uD83D\uDCE7 \u2709 " + data.alert;
     if (type === 0)
         note.title = 'Full match replay of ' + name + ' is now available. Watch it now!';

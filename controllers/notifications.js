@@ -171,7 +171,7 @@ module.exports.pushCustomNotification = function (req, res) {
             note.sound = "default";
             // note.alert = "\uD83D\uDCE7 \u2709 " + data.alert;
             note.title = data.title;
-
+            note.topic = 'com.astralerapps.livematchios'
             apnProvider.send(note, token.token).then(function (result) {
                 // sendJSONResponse(res, 200, {
                 //     sent: result.sent.length,

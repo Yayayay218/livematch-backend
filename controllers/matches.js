@@ -23,7 +23,7 @@ var pushNotification = function (name, token) {
     // note.alert = "\uD83D\uDCE7 \u2709 " + data.alert;
     note.title = name + ' is now on live. Watch it now!';
     note.body = name + ' is now on live. Watch it now!';
-    note.topic = 'com.astralerapps.livematchHD';
+    note.topic = 'com.astralerapps.livematchios';
 
     console.log(note);
     token.forEach(function (token) {
