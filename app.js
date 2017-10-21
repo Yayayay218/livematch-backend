@@ -7,11 +7,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var paginate 	= require('express-paginate');
 var swaggerUi 	= require('swagger-ui-express');
-
+var passport = require('passport');
 var JsonRefs 	= require('json-refs');
 var YAML 		= require('js-yaml');
 
 require('./models/db');
+require('./config/passport');
 
 var cors = require('cors'); // call the cors to fix access control bug.
 
@@ -60,8 +61,25 @@ JsonRefs.resolveRefsAt('./swagger/index.yaml', optionsRef).then(function (result
 }, function (err) {
     console.log(err.stack);
 });
+app.use(passport.initialize());
 
 app.use('/api', routesApi);
 
+app.get('/auth/facebook',
+    passport.authenticate('facebook', {scope: ['public_profile', 'email', 'user_friends']}));
+
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+        successRedirect: '/profile',
+        failureRedirect: '/'
+    }));
+
+// Catch unauthorised errors
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401);
+        res.json({"message" : err.name + ": " + err.message});
+    }
+});
 
 module.exports = app;

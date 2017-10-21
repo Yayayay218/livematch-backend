@@ -60,6 +60,7 @@ export const FullMatchCreate = (props) => {
                     <TextInput source="description" validate={[required]}/>
                     <TextInput source="link" validate={[required]}/>
                     <TextInput source="label" validate={[required]}/>
+                    <TextInput source="coverPhoto" label="Cover Photo" validate={[required]}/>
                     <ReferenceInput label="Assign to" source="match" reference="matches"
                                     allowEmpty>
                         <SelectInput optionText="name"/>
@@ -91,6 +92,7 @@ export const FullMatchEdit = (props) => (
                 <TextInput source="description" validate={[required]}/>
                 <TextInput source="link" validate={[required]}/>
                 <TextInput source="label" validate={[required]}/>
+                <TextInput source="coverPhoto" label="Cover Photo" validate={[required]}/>
                 <ReferenceInput label="Assign to" source="match._id" reference="matches"
                                 allowEmpty>
                     <SelectInput optionText="name"/>

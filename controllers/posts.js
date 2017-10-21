@@ -170,6 +170,59 @@ module.exports.newHighlight = function (req, res) {
     });
 };
 
+//  GET all Posts UnAuthorize
+module.exports.postGetAllUnAuthorize = function (req, res) {
+    var query = req.query || {};
+    const id = req.query.id;
+    delete req.query.id;
+    const match = req.query.match;
+    delete req.query.match;
+    const type = req.query.type;
+    delete req.query.type;
+    if (id)
+        query = {
+            "_id": {$in: id},
+            "status": 1
+        };
+    else if (match)
+        query = {
+            "match": {$in: match},
+            "status": 1
+        };
+    else if (type)
+        query = {
+            "type": {$in: type},
+            "status": 1
+        };
+    else
+        query = {
+            "status": 1
+        };
+    Posts.paginate(
+        query,
+        {
+            sort: req.query.sort,
+            populate: 'match',
+            page: Number(req.query.page),
+            limit: Number(req.query.limit)
+        }, function (err, post) {
+            if (err)
+                return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
+                    success: false,
+                    message: err
+                });
+            var results = {
+                data: post.docs,
+                total: post.total,
+                limit: post.limit,
+                page: post.page,
+                pages: post.pages
+            };
+            return sendJSONResponse(res, HTTPStatus.OK, results);
+        }
+    )
+};
+
 //  GET all Posts
 module.exports.postGetAll = function (req, res) {
     var query = req.query || {};
@@ -179,8 +232,6 @@ module.exports.postGetAll = function (req, res) {
     delete req.query.match;
     const type = req.query.type;
     delete req.query.type;
-    const status = req.query.status;
-    delete req.query.status;
     if (id)
         query = {
             "_id": {$in: id}
@@ -193,10 +244,6 @@ module.exports.postGetAll = function (req, res) {
         query = {
             "type": {$in: type}
         };
-    else if (status)
-        query = {
-            "status": {$in: status}
-        }
     else
         query = {};
     Posts.paginate(
