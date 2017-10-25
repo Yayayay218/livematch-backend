@@ -1,0 +1,17 @@
+facebook:
+  post:
+    tags:
+      - auth
+    description: Login Facebook
+    produces:
+      - application/json
+    parameters:
+      - name: data
+        description: SocialLogin object
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/SocialLogin'
+    responses:
+      200:
+        description: Successfully Login Faceboook

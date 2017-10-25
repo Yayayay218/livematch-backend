@@ -20,6 +20,16 @@ var userSchema = new mongoose.Schema({
             required: false
         }
     },
+    twitter: {
+        id: {
+            type: String,
+            required: false
+        },
+        token: {
+            type: String,
+            required: false
+        }
+    },
     token: {
         type: String,
         required: false

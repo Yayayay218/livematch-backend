@@ -1,17 +1,13 @@
 swagger: '2.0'
 info:
   $ref: info/index.yaml
-#securityDefinitions:
-#  UserSecurity:
-#    type: apiKey
-#    in: header
-#    name: Authorization
-#    scopes:
-#      admin: Admin scope
-#      user: User scope
-#      media: Media scope
-#security:
-#  - UserSecurity: []
+securityDefinitions:
+  UserSecurity:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+  - UserSecurity: []
 schemes:
   - http
 basePath: '/api'

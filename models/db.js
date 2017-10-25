@@ -49,4 +49,6 @@ require('./channels');
 require('./tokens');
 require('./notifications');
 require('./users');
-require('./settings')
+require('./settings');
+require('./comments');
+require('./votes');

@@ -1,0 +1,48 @@
+votes:
+  get:
+    tags:
+      - votes
+    description:  Get Vote
+    parameters:
+      - name: id
+        in: query
+        description:  Vote ID
+        type: string
+
+      - name: channel
+        in: query
+        description:  Channel
+        type: string
+
+      - name: comment
+        in: query
+        description:  Comment
+        type: string
+    responses:
+      200:
+        description:  OK
+        schema:
+          $ref: '#/definitions/Vote'
+
+voteAction:
+  post:
+    tags:
+      - votes
+    description:  Create a Vote
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - name: id
+        description: ID
+        required: true
+        in: path
+        type: string
+
+    responses:
+      200:
+        description:  OK
+
+
+

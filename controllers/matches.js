@@ -4,6 +4,8 @@ var apn = require('apn');
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
+var slug = require('slug');
+var fs = require('fs');
 
 var Matches = mongoose.model('Matches');
 var Notifications = mongoose.model('Notifications');
@@ -59,6 +61,7 @@ var getListTokens = function (id, status) {
 
 //  POST a match
 module.exports.matchPOST = function (req, res) {
+    req.body.slug = slug(req.body.name);
     var data = req.body;
 
     var match = new Matches(data);
@@ -98,9 +101,16 @@ module.exports.matchGetAll = function (req, res) {
     Matches.paginate(
         query,
         {
+            populate: {
+                path: 'comments',
+                populate: {
+                    path: 'user'
+                }
+            },
             sort: sort,
             page: Number(req.query.page),
-            limit: Number(req.query.limit)
+            limit: Number(req.query.limit),
+            // lean: true
         }, function (err, match) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
@@ -120,22 +130,64 @@ module.exports.matchGetAll = function (req, res) {
 };
 
 module.exports.matchGetOne = function (req, res) {
-    Matches.findById(req.params.id, function (err, match) {
-        if (err)
-            return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
-                success: false,
-                message: err
-            });
-        if (!match)
-            return sendJSONResponse(res, HTTPStatus.NOT_FOUND, {
-                success: false,
-                message: 'match not founded'
-            });
-        return sendJSONResponse(res, HTTPStatus.OK, {
-            success: true,
-            data: match
+    if (req.params.id instanceof mongoose.Types.ObjectId)
+        Matches.findById(req.params.id, function (err, match) {
+            if (err)
+                return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
+                    success: false,
+                    message: err
+                });
+            if (!match)
+                return sendJSONResponse(res, HTTPStatus.NOT_FOUND, {
+                    success: false,
+                    message: 'match not founded'
+                });
+            return sendJSONResponse(res, HTTPStatus.OK, {
+                success: true,
+                data: match
+            })
         })
-    })
+    else
+        Matches.findOne({slug: req.params.id}, function (err, match) {
+            if (err)
+                return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
+                    success: false,
+                    message: err
+                });
+            if (!match)
+                return sendJSONResponse(res, HTTPStatus.NOT_FOUND, {
+                    success: false,
+                    message: 'match not founded'
+                });
+            var html = '' + '<!DOCTYPE html> ' +
+                '<html> ' +
+                '<title>Livematch</title>' +
+                '<head><meta property="og:url" content="getlivematch.com/"/>' +
+                '<meta property="og:type" content="website"/>' +
+                '<meta property="og:title" content="' + match.name + '" />' +
+                '<meta property="og:description" content="' + match.description + '" />' +
+                '<meta property="og:image" content="' + '' + '"/>' +
+                '<meta property="al:ios:app_store_id" content="1292121995"/>' +
+                '<meta property="al:ios:url" content="com.astralerapps.livematchios://"/>' +
+                '<meta property="al:ios:app_name" content="Livematch"/>' +
+                ' </head>' +
+                '<body>' +
+                '<script>var isMobile = {Android: function(){return navigator.userAgent.match(/Android/i);},BlackBerry: function() {return navigator.userAgent.match(/BlackBerry/i);},' +
+                'iOS: function() {return navigator.userAgent.match(/iPhone|iPad|iPod/i);},Opera: function(){return navigator.userAgent.match(/Opera Mini/i);},' +
+                'Windows:function(){return navigator.userAgent.match(/IEMobile/i);},any: function()' +
+                '{return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());}};' +
+                'if(isMobile.iOS()) {     ' +
+                'document.location.href="com.astralerapps.livematchios://"; } ' +
+                'else {document.location.href="https://getlivematch.com/"; }' +
+                '</script>' +
+                '</body>' +
+                '</html>';
+            return res.send(html)
+        })
+};
+
+module.exports.matchGetSlug = function (req, res) {
+
 };
 
 //  DEL a matchz
@@ -157,6 +209,7 @@ module.exports.matchDEL = function (req, res) {
 //  PUT a match
 module.exports.matchPUT = function (req, res) {
     req.body.updatedAt = Date.now();
+    req.body.slug = slug(req.body.name);
 
     var data = req.body;
     Matches.findByIdAndUpdate(req.params.id, data, {'new': true}, function (err, match) {

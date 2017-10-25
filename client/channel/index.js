@@ -63,7 +63,7 @@ export const ChannelCreate = (props) => (
             ]}/>
             <BooleanInput label="Show Link" source="isShow"/>
 
-            <ReferenceInput label="Assign to" source="match" reference="matches" validate={[required]}
+            <ReferenceInput label="Assign to" source="match" reference="matches"
                             allowEmpty>
                 <SelectInput optionText="name"/>
             </ReferenceInput>
@@ -81,7 +81,7 @@ export const ChannelEdit = (props) => (
             <TextInput source="link" validate={[required]}/>
             <BooleanInput label="Show Link" source="isShow"/>
 
-            <ReferenceInput label="Assign to" source="match._id" reference="matches" validate={[required]}
+            <ReferenceInput label="Assign to" source="match._id" reference="matches"
                             allowEmpty>
                 <SelectInput optionText="name"/>
             </ReferenceInput>

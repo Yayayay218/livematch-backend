@@ -1,3 +1,11 @@
+/auth/facebook:
+  $ref: auth.yaml#/facebook
+/me:
+  $ref: user.yaml
+/comments:
+  $ref: comment.yaml#/comments
+/comments/{id}:
+  $ref: comment.yaml#/commentById
 /matches:
   $ref: match.yaml#/matches
 /matches/{id}:
@@ -16,3 +24,13 @@
   $ref: token.yaml#/tokens
 /notifications:
   $ref: notification.yaml#/notifications
+/votes:
+  $ref: vote.yaml#/votes
+/channel/votes/up/{id}:
+  $ref: vote.yaml#/voteAction
+/channel/votes/down/{id}:
+  $ref: vote.yaml#/voteAction
+/comment/votes/up/{id}:
+  $ref: vote.yaml#/voteAction
+/comment/votes/down/{id}:
+  $ref: vote.yaml#/voteAction

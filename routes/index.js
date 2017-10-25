@@ -16,6 +16,9 @@ var notificationCtrl = require('../controllers/notifications');
 var tokenCtrl = require('../controllers/tokens');
 var authCtrl = require('../controllers/auth');
 var settingCtrl = require('../controllers/settings');
+var commentCtrl = require('../controllers/comments');
+var voteCtrl = require('../controllers/votes');
+
 var passport = require('passport');
 
 var crypto = require('crypto');
@@ -29,14 +32,30 @@ var crypto = require('crypto');
 //  Auth
 router.post('/auth/register', authCtrl.register);
 router.post('/auth/login', authCtrl.login);
+
 router.post('/auth/facebook',
     passport.authenticate('facebook-token'),
+    authCtrl.loginSocial
+);
+router.post('/auth/twitter',
+    passport.authenticate('twitter-token'),
     authCtrl.loginSocial
 );
 
 //  User
 router.get('/me', auth, authCtrl.userGETInfo);
 router.put('/me', auth, authCtrl.userPUT);
+
+//  Vote APIs
+router.get('/votes', auth, voteCtrl.voteGetAll);
+router.post('/channel/votes/up/:id', auth, voteCtrl.voteUpChannel);
+router.post('/channel/votes/down/:id', auth, voteCtrl.voteDownChannel);
+router.post('/comment/votes/up/:id', auth, voteCtrl.voteUpComment);
+router.post('/comment/votes/down/:id', auth, voteCtrl.voteDownComment);
+
+//  Comments APIs
+router.post('/comments', auth, commentCtrl.commentPOST);
+router.get('/comments', commentCtrl.commentGetAll);
 
 //  Token APIs
 router.post('/tokens', auth, tokenCtrl.tokenPOST);
@@ -46,6 +65,7 @@ router.get('/tokens', tokenCtrl.tokenGetAll);
 router.post('/matches', auth, matchCtrl.matchPOST);
 router.get('/matches', matchCtrl.matchGetAll);
 router.get('/matches/:id', matchCtrl.matchGetOne);
+// router.get('matches/:slug', matchCtrl.matchGetSlug);
 router.put('/matches/:id', auth, matchCtrl.matchPUT);
 router.delete('/matches/:id', auth, matchCtrl.matchDEL);
 

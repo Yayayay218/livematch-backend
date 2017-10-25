@@ -1,79 +1,77 @@
-posts:
+comments:
   post:
     tags:
-      - posts
-    description:  Create a Post
+      - comments
+    description:  Create a Comment
     consumes:
       - application/json
     produces:
       - application/json
     parameters:
       - name: data
-        description:  Post Object
+        description:  Comment Object
         type: object
         in: body
         required: true
         schema:
-          $ref: '#/definitions/Post'
+          $ref: '#/definitions/Comment'
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Post'
+          $ref: '#/definitions/Comment'
   get:
     tags:
-      - posts
-    description:  Get question
+      - comments
+    description:  Get Comment
     parameters:
       - name: id
         in: query
-        description:  question ID
+        description:  Comment ID
         type: string
+
       - name: match
         in: query
-        description:  Match id
-        type: string
-      - name: status
-        in: query
-        description:  Status
+        description:  Match
         type: string
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Post'
-postById:
+          $ref: '#/definitions/Comment'
+
+commentById:
   put:
     tags:
-      - posts
-    description:  Edit question
+      - comments
+    description:  Edit Comment
     produces:
       - application/json
     parameters:
       - name: id
-        description:  question ID
+        description:  Comment ID
         required: true
         in: path
         type: string
       - name: data
-        description:  question Object
+        description:  Comment Object
         type: object
         in: body
         required: true
         schema:
-          $ref: '#/definitions/Post'
+          $ref: '#/definitions/Comment'
     responses:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Post'
+          $ref: '#/definitions/Comment'
   delete:
     tags:
-      - posts
-    description:  Delete question
+      - comments
+    description:  Delete Comment
     parameters:
       - name: id
-        description:  question ID
+        description:  Comment ID
         required: true
         in: path
         type: string
@@ -81,7 +79,7 @@ postById:
       200:
         description:  OK
         schema:
-          $ref: '#/definitions/Post'
+          $ref: '#/definitions/Comment'
 
 
 

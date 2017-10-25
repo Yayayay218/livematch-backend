@@ -1,12 +1,6 @@
 var mongoose = require('mongoose'), Schema = mongoose.Schema;
 var mongoosePaginate = require('mongoose-paginate');
 
-var channelSchema = new mongoose.Schema({
-    name: String,
-    link: String,
-    status: Number
-});
-
 var matchSchema = new mongoose.Schema({
     name: String,
     description: String,
@@ -15,7 +9,7 @@ var matchSchema = new mongoose.Schema({
     status: Number,
     isRequired: Boolean,
     index: Number,
-    // channels: [channelSchema],
+    slug: String,
     createdAt: {
         type: Date,
         default: Date.now()

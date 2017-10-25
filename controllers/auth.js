@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var HTTPStatus = require('../helpers/lib/http_status');
 mongoose.Promise = global.Promise;
 var User = mongoose.model('Users');
+var Votes = mongoose.model('Votes');
+var Channels = mongoose.model('Channels');
 
 var sendJSONResponse = function (res, status, content) {
     res.status(status);
@@ -113,6 +115,7 @@ module.exports.userPUT = function (req, res) {
         })
     });
 };
+
 
 
 

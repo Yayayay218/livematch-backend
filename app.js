@@ -5,11 +5,11 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var paginate 	= require('express-paginate');
-var swaggerUi 	= require('swagger-ui-express');
+var paginate = require('express-paginate');
+var swaggerUi = require('swagger-ui-express');
 var passport = require('passport');
-var JsonRefs 	= require('json-refs');
-var YAML 		= require('js-yaml');
+var JsonRefs = require('json-refs');
+var YAML = require('js-yaml');
 
 require('./models/db');
 require('./config/passport');
@@ -45,7 +45,7 @@ app.get('/', function (req, res) {
     res.json({message: "Welcome to our LiveMatch!"});
 });
 
-var optionsRef 	= {
+var optionsRef = {
     filter: ['relative', 'remote'],
     loaderOptions: {
         processContent: function (res, cb) {
@@ -61,6 +61,28 @@ JsonRefs.resolveRefsAt('./swagger/index.yaml', optionsRef).then(function (result
 }, function (err) {
     console.log(err.stack);
 });
+
+// JsonRefs.resolveRefsAt('./swagger/index.yaml', {
+//     filter: ['relative', 'remote'],
+//     loaderOptions: {
+//         processContent: function (res, cb) {
+//             cb(undefined, YAML.safeLoad(res.text));
+//         }
+//     }
+// }).then(function (results) {
+//     var showExplorer = true;
+//     var options = {validatorUrl: null};
+//     app.get('/api-docs', swaggerUi.serve, swaggerUi.setup(results.resolved, showExplorer, options));
+//     app.use(function (req, res, next) {
+//         var err = new Error('Not Found');
+//         err.status = 404;
+//         next(err);
+//     });
+// }).catch(function (err) {
+//     console.error(err.stack);
+//     process.exit(1);
+// });
+
 app.use(passport.initialize());
 
 app.use('/api', routesApi);
@@ -78,7 +100,7 @@ app.get('/auth/facebook/callback',
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         res.status(401);
-        res.json({"message" : err.name + ": " + err.message});
+        res.json({"message": err.name + ": " + err.message});
     }
 });
 

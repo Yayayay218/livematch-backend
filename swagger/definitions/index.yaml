@@ -8,3 +8,11 @@ Token:
   $ref: ./Token.yaml#/Token
 Notification:
   $ref: ./Notification.yaml#/Notification
+SocialLogin:
+  $ref: ./SocialLogin.yaml
+UserInformation:
+  $ref: ./User.yaml#/UserInformation
+Comment:
+  $ref: ./Comment.yaml#/Comment
+Vote:
+  $ref: ./Vote.yaml#/Vote

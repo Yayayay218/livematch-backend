@@ -12,3 +12,5 @@ Channel:
     status:
       type: number
       description: 'INACTIVE: 0, ACTIVE: 1'
+    match:
+      type: string

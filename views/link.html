@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html><title>Livematch</title>
+<head>
+    <meta property="og:url" content="getlivematch.com/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="'+match.name+'"/>
+    <meta property="og:description" content="'+match.description+'"/>
+    <!--<meta property="og:image" content="'+room.photos[0]+'"/>-->
+    <meta property="al:ios:app_store_id" content="1292121995"/>
+    <meta property="al:ios:url" content="com.astralerapps.livematchios://"/>
+    <meta property="al:ios:app_name" content="Livematch"/>
+</head>
+<body>
+<script>
+    var isMobile = {
+        Android: function () {
+            return navigator.userAgent.match(/Android/i);
+        }, BlackBerry: function () {
+            return navigator.userAgent.match(/BlackBerry/i);
+        }, iOS: function () {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        }, Opera: function () {
+            return navigator.userAgent.match(/Opera Mini/i);
+        }, Windows: function () {
+            return navigator.userAgent.match(/IEMobile/i);
+        }, any: function () {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+    if (isMobile.iOS()) {
+        document.location.href = "com.astralerapps.livematchios://";
+    } else {
+        document.location.href = "https://getlivematch.com/";
+    }
+</script>
+</body>
+</html>

@@ -1,14 +1,13 @@
 var mongoose = require('mongoose');
+
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
 var _ = require('lodash');
 var async = require('async');
 
-
-var Channels = mongoose.model('Channels');
+var Comments = mongoose.model('Comments');
 var Matches = mongoose.model('Matches');
-var Users = mongoose.model('Users');
 var Votes = mongoose.model('Votes');
 
 var sendJSONResponse = function (res, status, content) {
@@ -16,13 +15,13 @@ var sendJSONResponse = function (res, status, content) {
     res.json(content);
 };
 
-var sumVote = function (channel) {
+var sumVote = function (comment) {
     return new Promise(function (resolve, reject) {
         Votes.aggregate([
             {
                 $match:
                     {
-                        channel: mongoose.Types.ObjectId(channel)
+                        comment: mongoose.Types.ObjectId(comment)
                     }
             },
             {
@@ -38,151 +37,118 @@ var sumVote = function (channel) {
         })
     })
 }
-//  Config upload photo
-// var multer = require('multer');
-//
-// var storage = multer.diskStorage({ //multers disk storage settings
-//     destination: function (req, file, cb) {
-//         cb(null, 'uploads/channel')
-//     },
-//     filename: function (req, file, cb) {
-//         var datetimestamp = Date.now();
-//         cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
-//     }
-// });
-// var upload = multer({
-//     storage: storage
-// }).single('file');
 
-//  POST a channel
-module.exports.channelPOST = function (req, res) {
+//  POST a comment
+module.exports.commentPOST = function (req, res) {
+    req.body.user = req.payload._id;
     var data = req.body;
 
-    var channel = new Channels(data);
-    channel.save(function (err, channel) {
+    var comment = new Comments(data);
+    comment.save(function (err, comment) {
         if (err)
-            return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
-                success: false,
-                message: err
-            });
-        return sendJSONResponse(res, HTTPStatus.CREATED, {
+            return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err)
+        return sendJSONResponse(res, HTTPStatus.OK, {
             success: true,
-            message: "Add a new channel successful!",
-            data: channel
+            message: 'OK',
+            data: comment
         })
-    });
+    })
 };
 
-//  GET all Channels
-module.exports.channelGetAll = function (req, res) {
+//  GET all Comments
+module.exports.commentGetAll = function (req, res) {
     var query = req.query || {};
     const id = req.query.id;
     delete req.query.id;
-    const match = req.query.match;
+    var sort = req.query.sort || '-_id';
+    delete req.query.sort;
+    var match = req.query.match;
     delete req.query.match;
-    const status = req.query.status;
-    delete req.query.status;
-    var search = req.query.q;
-    if (id) {
+
+    if (id)
         query = {
             "_id": {$in: id}
         };
-    }
     else if (match)
         query = {
             "match": {$in: match}
         };
-    else if (search) {
-
-        query = {
-            $or: [{
-                matchName: {
-                    $regex: search,
-                    $options: 'i'
-                }
-            }]
-        }
-    }
-    else if (status)
-        query = {
-            "status": {$in: status}
-        };
     else
         query = {};
-    Channels.paginate(
+    Comments.paginate(
         query,
         {
-            sort: req.query.sort,
+            sort: sort,
             page: Number(req.query.page),
             limit: Number(req.query.limit),
             lean: true
-        }, function (err, channel) {
+        }, function (err, comment) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
                     success: false,
                     message: err
                 });
             var tmp = [];
-            async.each(channel.docs, function (data, callback) {
+            async.each(comment.docs, function (data, callback) {
                 sumVote(data._id).then(function (votes) {
-                    var newChannel =[];
+                    var newComment =[];
                     if (!votes[0])
-                         newChannel = _.assign(data, {votes: 0});
+                        newComment = _.assign(data, {votes: 0});
                     else
-                        newChannel = _.assign(data, {votes: votes[0].total});
-                    tmp.push(newChannel);
+                        newComment = _.assign(data, {votes: votes[0].total});
+                    tmp.push(newComment);
                     callback();
                 })
             }, function (err) {
                 if (err) {
                     var results = {
-                        data: channel.docs,
-                        total: channel.total,
-                        limit: channel.limit,
-                        page: channel.page,
-                        pages: channel.pages,
+                        data: comment.docs,
+                        total: comment.total,
+                        limit: comment.limit,
+                        page: comment.page,
+                        pages: comment.pages,
                     };
                     return sendJSONResponse(res, HTTPStatus.OK, results);
                 }
                 else {
-                    channel.docs = tmp;
+                    comment.docs = tmp;
                     var results = {
-                        data: channel.docs,
-                        total: channel.total,
-                        limit: channel.limit,
-                        page: channel.page,
-                        pages: channel.pages,
+                        data: comment.docs,
+                        total: comment.total,
+                        limit: comment.limit,
+                        page: comment.page,
+                        pages: comment.pages,
                     };
                     return sendJSONResponse(res, HTTPStatus.OK, results);
                 }
             })
-
         }
     )
 };
-module.exports.channelGetOne = function (req, res) {
-    Channels.findById(req.params.id, function (err, channel) {
+
+module.exports.commentGetOne = function (req, res) {
+    Comments.findById(req.params.id, function (err, comment) {
         if (err)
             return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
                 success: false,
                 message: err
             });
-        if (!channel)
+        if (!comment)
             return sendJSONResponse(res, HTTPStatus.NOT_FOUND, {
                 success: false,
-                message: 'channel not founded'
+                message: 'comment not founded'
             });
         return sendJSONResponse(res, HTTPStatus.OK, {
             success: true,
-            data: channel
+            data: comment
         })
     })
 };
 
-//  DEL a channelz
-module.exports.channelDEL = function (req, res) {
+//  DEL a commentz
+module.exports.commentDEL = function (req, res) {
     if (req.params.id)
-        Channels.findByIdAndRemove(req.params.id, function (err) {
+        Comments.findByIdAndRemove(req.params.id, function (err) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.NOT_FOUND, {
                     success: false,
@@ -190,31 +156,32 @@ module.exports.channelDEL = function (req, res) {
                 });
             return sendJSONResponse(res, HTTPStatus.NO_CONTENT, {
                 success: true,
-                message: 'channel was deleted'
+                message: 'comment was deleted'
             })
         });
 };
 
-//  PUT a channel
-module.exports.channelPUT = function (req, res) {
+//  PUT a comment
+module.exports.commentPUT = function (req, res) {
     req.body.updatedAt = Date.now();
-    var data = req.body;
 
-    Channels.findByIdAndUpdate(req.params.id, data, {'new': true}, function (err, channel) {
+    var data = req.body;
+    Comments.findByIdAndUpdate(req.params.id, data, {'new': true}, function (err, comment) {
         if (err)
             return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
                 success: false,
                 message: err
             });
-        if (!channel)
+        if (!comment)
             return sendJSONResponse(res, HTTPStatus.NOT_FOUND, {
                 success: false,
-                message: "channel's not founded"
+                message: "comment's not founded"
             });
+
         return sendJSONResponse(res, HTTPStatus.OK, {
             success: true,
-            message: 'Update channel successful!',
-            data: channel
+            message: 'Update comment successful!',
+            data: comment
         })
     });
 };
