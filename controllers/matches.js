@@ -4,8 +4,12 @@ var apn = require('apn');
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
+var encrypt = require('../helpers/lib/encryptAPI')
+
 var slug = require('slug');
 var fs = require('fs');
+var CryptoJS = require("crypto-js");
+
 
 var Matches = mongoose.model('Matches');
 var Notifications = mongoose.model('Notifications');
@@ -71,11 +75,14 @@ module.exports.matchPOST = function (req, res) {
                 success: false,
                 message: err
             });
-        return sendJSONResponse(res, HTTPStatus.CREATED, {
+        var results = {
             success: true,
             message: "Add a new match successful!",
             data: match
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+        return sendJSONResponse(res, HTTPStatus.CREATED, encrypt.jsonObject(results))
     });
 };
 
@@ -124,13 +131,15 @@ module.exports.matchGetAll = function (req, res) {
                 page: match.page,
                 pages: match.pages
             };
-            return sendJSONResponse(res, HTTPStatus.OK, results);
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
         }
     )
 };
 
 module.exports.matchGetOne = function (req, res) {
-    if (req.params.id instanceof mongoose.Types.ObjectId)
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    if (checkForHexRegExp.test(req.params.id)) {
         Matches.findById(req.params.id, function (err, match) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
@@ -142,11 +151,19 @@ module.exports.matchGetOne = function (req, res) {
                     success: false,
                     message: 'match not founded'
                 });
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
-                data: match
-            })
-        })
+                data: match,
+            };
+
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
+            // return sendJSONResponse(res, HTTPStatus.OK, {
+            //     data: match
+            // })
+        });
+    }
     else
         Matches.findOne({slug: req.params.id}, function (err, match) {
             if (err)
@@ -184,10 +201,6 @@ module.exports.matchGetOne = function (req, res) {
                 '</html>';
             return res.send(html)
         })
-};
-
-module.exports.matchGetSlug = function (req, res) {
-
 };
 
 //  DEL a matchz
@@ -229,11 +242,13 @@ module.exports.matchPUT = function (req, res) {
             }).catch(function (err) {
                 console.log(err);
             });
-
-        return sendJSONResponse(res, HTTPStatus.OK, {
+        var results = {
             success: true,
             message: 'Update match successful!',
             data: match
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
     });
 };

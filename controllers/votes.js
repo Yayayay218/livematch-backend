@@ -4,6 +4,8 @@ var apn = require('apn');
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
+var CryptoJS = require('crypto-js')
+var encrypt = require('../helpers/lib/encryptAPI')
 
 var Votes = mongoose.model('Votes');
 
@@ -60,7 +62,8 @@ module.exports.voteGetAll = function (req, res) {
                 page: vote.page,
                 pages: vote.pages
             };
-            return sendJSONResponse(res, HTTPStatus.OK, results);
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
         }
     )
 };
@@ -98,11 +101,13 @@ module.exports.voteUpChannel = function (req, res) {
                         success: false,
                         message: "vote's not founded"
                     });
-                return sendJSONResponse(res, HTTPStatus.OK, {
+                var results = {
                     success: true,
                     message: 'Update vote successful!',
                     data: vote
-                })
+                }
+
+                return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
             })
         }
         else
@@ -125,11 +130,12 @@ module.exports.voteUpChannel = function (req, res) {
         vote.save(function (err, vote) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err);
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
-                message: 'OK',
+                message: 'Update vote successful!',
                 data: vote
-            })
+            }
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
     })
 
@@ -153,11 +159,12 @@ module.exports.voteDownChannel = function (req, res) {
                         success: false,
                         message: "vote's not founded"
                     });
-                return sendJSONResponse(res, HTTPStatus.OK, {
+                var results = {
                     success: true,
                     message: 'Update vote successful!',
                     data: vote
-                })
+                }
+                return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
             })
         }
         else
@@ -181,11 +188,12 @@ module.exports.voteDownChannel = function (req, res) {
         vote.save(function (err, vote) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err);
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
-                message: 'OK',
+                message: 'Update vote successful!',
                 data: vote
-            })
+            }
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
     })
 };
@@ -223,11 +231,12 @@ module.exports.voteUpComment = function (req, res) {
                         success: false,
                         message: "vote's not founded"
                     });
-                return sendJSONResponse(res, HTTPStatus.OK, {
+                var results = {
                     success: true,
                     message: 'Update vote successful!',
                     data: vote
-                })
+                }
+                return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
             })
         }
         else
@@ -250,11 +259,12 @@ module.exports.voteUpComment = function (req, res) {
         vote.save(function (err, vote) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err);
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
-                message: 'OK',
+                message: 'Update vote successful!',
                 data: vote
-            })
+            }
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
     })
 
@@ -278,11 +288,12 @@ module.exports.voteDownComment = function (req, res) {
                         success: false,
                         message: "vote's not founded"
                     });
-                return sendJSONResponse(res, HTTPStatus.OK, {
+                var results = {
                     success: true,
                     message: 'Update vote successful!',
                     data: vote
-                })
+                }
+                return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
             })
         }
         else
@@ -306,11 +317,12 @@ module.exports.voteDownComment = function (req, res) {
         vote.save(function (err, vote) {
             if (err)
                 return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err);
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
-                message: 'OK',
+                message: 'Update vote successful!',
                 data: vote
-            })
+            }
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
     })
 };

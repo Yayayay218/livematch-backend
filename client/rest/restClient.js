@@ -8,6 +8,7 @@ import {
     DELETE,
     fetchUtils
 } from 'admin-on-rest';
+import CryptoJS from 'crypto-js'
 
 export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     const convertRESTRequestToHTTP = (type, resource, params) => {
@@ -97,20 +98,26 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
     };
 
     const convertHTTPResponseToREST = (response, type, resource, params) => {
+        //  Decrypt
+        // va json = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+
         const {headers, json} = response;
+        var bytes  = CryptoJS.AES.decrypt(json, 'peWseTYsjSLDzZBFYhJb2ouZUxPMAHbR');
+        var tmp = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         // console.log("convertHTTPResponseToREST JSON: ", json);
         // console.log("convertHTTPResponseToREST TYPE: ", type);
         switch (type) {
             case GET_LIST:
             case GET_MANY_REFERENCE:
                 return {
-                    data: json.data.map(x => ({...x, id: x._id})),
-                    total: parseInt(json.total, 10)
+                    data: tmp.data.map(x => ({...x, id: x._id})),
+                    total: parseInt(tmp.total, 10)
                 };
             case CREATE:
             case GET_ONE:
             case UPDATE:
-                return {data: {...json.data, id: json.data._id}};
+                return {data: {...tmp.data, id: tmp.data._id}};
             case DELETE:
                 return {data: {...params.data}};
             // case GET_MANY:
@@ -118,7 +125,7 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson) => {
             //         data : json.data.map(x => ({...x, id: x._id}))
             //     };
             default:
-                return {data: {...json.data, id: json.data._id}};
+                return {data: {...tmp.data, id: tmp.data._id}};
         }
     };
 

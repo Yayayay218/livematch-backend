@@ -5,7 +5,9 @@ var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
 var _ = require('lodash');
 var async = require('async');
+var CryptoJS = require('crypto-js')
 
+var encrypt = require('../helpers/lib/encryptAPI')
 var Comments = mongoose.model('Comments');
 var Matches = mongoose.model('Matches');
 var Votes = mongoose.model('Votes');
@@ -15,7 +17,7 @@ var sendJSONResponse = function (res, status, content) {
     res.json(content);
 };
 
-var sumVote = function (comment) {
+var sumVote = function (comment, user) {
     return new Promise(function (resolve, reject) {
         Votes.aggregate([
             {
@@ -25,8 +27,14 @@ var sumVote = function (comment) {
                     }
             },
             {
+                $addFields: {
+                    isVote: {$eq: ['$user', mongoose.Types.ObjectId(user)]},
+                }
+            },
+            {
                 $group: {
                     _id: null,
+                    isVote: {$push: '$isVote'},
                     total: {$sum: "$status"}
                 }
             }], function (err, result) {
@@ -46,12 +54,13 @@ module.exports.commentPOST = function (req, res) {
     var comment = new Comments(data);
     comment.save(function (err, comment) {
         if (err)
-            return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err)
-        return sendJSONResponse(res, HTTPStatus.OK, {
+            return sendJSONResponse(res, HTTPStatus.BAD_REQUEST, err);
+        var results = {
             success: true,
-            message: 'OK',
             data: comment
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
     })
 };
 
@@ -75,9 +84,15 @@ module.exports.commentGetAll = function (req, res) {
         };
     else
         query = {};
+    var userId = '59f046feace52e03554a47b9';
+    if (req.query.userId)
+        userId = req.query.userId;
+    else
+        userId = '59f046feace52e03554a47b9';
     Comments.paginate(
         query,
         {
+            populate: 'user',
             sort: sort,
             page: Number(req.query.page),
             limit: Number(req.query.limit),
@@ -90,12 +105,12 @@ module.exports.commentGetAll = function (req, res) {
                 });
             var tmp = [];
             async.each(comment.docs, function (data, callback) {
-                sumVote(data._id).then(function (votes) {
+                sumVote(data._id, userId).then(function (votes) {
                     var newComment =[];
                     if (!votes[0])
                         newComment = _.assign(data, {votes: 0});
                     else
-                        newComment = _.assign(data, {votes: votes[0].total});
+                        newComment = _.assign(data, {votes: votes[0].total, isVote: votes[0].isVote});
                     tmp.push(newComment);
                     callback();
                 })
@@ -108,7 +123,8 @@ module.exports.commentGetAll = function (req, res) {
                         page: comment.page,
                         pages: comment.pages,
                     };
-                    return sendJSONResponse(res, HTTPStatus.OK, results);
+                    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+                    return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
                 }
                 else {
                     comment.docs = tmp;
@@ -119,7 +135,9 @@ module.exports.commentGetAll = function (req, res) {
                         page: comment.page,
                         pages: comment.pages,
                     };
-                    return sendJSONResponse(res, HTTPStatus.OK, results);
+
+                    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+                    return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
                 }
             })
         }
@@ -177,11 +195,11 @@ module.exports.commentPUT = function (req, res) {
                 success: false,
                 message: "comment's not founded"
             });
-
-        return sendJSONResponse(res, HTTPStatus.OK, {
+        var results = {
             success: true,
-            message: 'Update comment successful!',
             data: comment
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
     });
 };

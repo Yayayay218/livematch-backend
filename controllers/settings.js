@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
+var CryptoJS = require('crypto-js');
+var encrypt = require('../helpers/lib/encryptAPI')
 
 var Settings = mongoose.model('Settings');
 
@@ -20,11 +22,12 @@ module.exports.settingPOST = function (req, res) {
                 success: false,
                 message: err
             });
-        return sendJSONResponse(res, HTTPStatus.CREATED, {
+        var results = {
             success: true,
-            message: "Add a new setting successful!",
             data: setting
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+        return sendJSONResponse(res, HTTPStatus.CREATED, encrypt.jsonObject(results))
     });
 };
 
@@ -66,7 +69,9 @@ module.exports.settingGetAll = function (req, res) {
                 page: setting.page,
                 pages: setting.pages
             };
-            return sendJSONResponse(res, HTTPStatus.OK, results);
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
         }
     )
 };
@@ -84,11 +89,13 @@ module.exports.settingGetOne = function (req, res) {
                 success: false,
                 message: 'Setting not Founded'
             })
-        return sendJSONResponse(res, HTTPStatus.OK, {
+        var results = {
             success: true,
-            message: 'OK',
             data: setting
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
     })
 };
 
@@ -107,10 +114,13 @@ module.exports.settingPUT = function (req, res) {
                 success: false,
                 message: err
             })
-        return sendJSONResponse(res, HTTPStatus.OK, {
+        var results = {
             success: true,
             message: 'Update successful!!',
             data: setting
-        })
+        }
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
     })
 };

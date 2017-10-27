@@ -25,7 +25,7 @@ const httpClient = (url, options = {}) => {
     const token = localStorage.getItem('token');
     options.headers.set('Authorization', token);
     return fetchUtils.fetchJson(url, options);
-}
+};
 
 const apiUrl = '/api';
 const restClient = customRestClient(apiUrl, httpClient);

@@ -52,3 +52,4 @@ require('./users');
 require('./settings');
 require('./comments');
 require('./votes');
+require('./report');

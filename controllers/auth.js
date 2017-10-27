@@ -1,6 +1,11 @@
 var passport = require('passport');
 var mongoose = require('mongoose');
 var HTTPStatus = require('../helpers/lib/http_status');
+var constant = require('../helpers/lib/constant');
+var CryptoJS = require('crypto-js');
+
+var encrypt = require('../helpers/lib/encryptAPI');
+
 mongoose.Promise = global.Promise;
 var User = mongoose.model('Users');
 var Votes = mongoose.model('Votes');
@@ -42,10 +47,12 @@ module.exports.login = function (req, res) {
         // If a user is found
         if (user) {
             token = user.generateJwt();
+            var results = {
+                token: 'Bearer ' + token
+            }
+
             res.status(200);
-            res.json({
-                "token": 'Bearer ' + token
-            });
+            res.json(results);
         } else {
             // If user is not found
             res.status(401).json(info);
@@ -62,14 +69,20 @@ module.exports.loginSocial = function (req, res) {
             res.status(HTTPStatus.INTERNAL_SERVER_ERROR)
             return res.send(err);
         } else {
+            var results = {
+                success: true,
+                token: 'Bearer' + token
+            };
+
             res.status(HTTPStatus.OK);
-            return res.json({success: true, token: 'Bearer ' + token});
+            return res.json(encrypt.stringObject(results));
         }
     });
 }
 
 module.exports.userGETInfo = function (req, res) {
-    sendJSONResponse(res, 200, req.payload);
+
+    sendJSONResponse(res, 200, encrypt.jsonObject(req.payload));
 };
 
 //  Config upload photo
@@ -107,11 +120,13 @@ module.exports.userPUT = function (req, res) {
                     success: false,
                     message: "post's not founded"
                 });
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
                 message: 'Update post successful!',
                 data: post
-            })
+            }
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
     });
 };

@@ -4,7 +4,9 @@ var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
 var _ = require('lodash');
 var async = require('async');
+var CryptoJS = require('crypto-js');
 
+var encrypt = require('../helpers/lib/encryptAPI');
 
 var Channels = mongoose.model('Channels');
 var Matches = mongoose.model('Matches');
@@ -16,7 +18,22 @@ var sendJSONResponse = function (res, status, content) {
     res.json(content);
 };
 
-var sumVote = function (channel) {
+var checkVoteChannelExist = function (user, channel) {
+    return new Promise(function (resolve, reject) {
+        Votes.findOne({
+            user: user,
+            channel: channel,
+        }, function (err, vote) {
+            if (err)
+                reject(err);
+            if (!vote)
+                reject(err);
+            resolve(vote)
+        })
+    })
+};
+
+var sumVote = function (channel, user) {
     return new Promise(function (resolve, reject) {
         Votes.aggregate([
             {
@@ -26,11 +43,18 @@ var sumVote = function (channel) {
                     }
             },
             {
+                $addFields: {
+                    isVote: {$eq: ['$user', mongoose.Types.ObjectId(user)]},
+                }
+            },
+            {
                 $group: {
                     _id: null,
+                    isVote: {$push: '$isVote'},
                     total: {$sum: "$status"}
                 }
-            }], function (err, result) {
+            }
+        ], function (err, result) {
             if (err)
                 reject(err);
             else
@@ -65,11 +89,11 @@ module.exports.channelPOST = function (req, res) {
                 success: false,
                 message: err
             });
-        return sendJSONResponse(res, HTTPStatus.CREATED, {
+        var results = {
             success: true,
-            message: "Add a new channel successful!",
             data: channel
-        })
+        }
+        return sendJSONResponse(res, HTTPStatus.CREATED, encrypt.jsonObject(results))
     });
 };
 
@@ -83,6 +107,11 @@ module.exports.channelGetAll = function (req, res) {
     const status = req.query.status;
     delete req.query.status;
     var search = req.query.q;
+    var userId = '59f046feace52e03554a47b9';
+    if (req.query.userId)
+        userId = req.query.userId;
+    else
+        userId = '59f046feace52e03554a47b9';
     if (id) {
         query = {
             "_id": {$in: id}
@@ -124,12 +153,13 @@ module.exports.channelGetAll = function (req, res) {
                 });
             var tmp = [];
             async.each(channel.docs, function (data, callback) {
-                sumVote(data._id).then(function (votes) {
-                    var newChannel =[];
+                sumVote(data._id, userId).then(function (votes) {
+                    var newChannel = [];
                     if (!votes[0])
-                         newChannel = _.assign(data, {votes: 0});
-                    else
-                        newChannel = _.assign(data, {votes: votes[0].total});
+                        newChannel = _.assign(data, {votes: 0});
+                    else {
+                        newChannel = _.assign(data, {votes: votes[0].total, isVote: votes[0].isVote});
+                    }
                     tmp.push(newChannel);
                     callback();
                 })
@@ -142,7 +172,7 @@ module.exports.channelGetAll = function (req, res) {
                         page: channel.page,
                         pages: channel.pages,
                     };
-                    return sendJSONResponse(res, HTTPStatus.OK, results);
+                    return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
                 }
                 else {
                     channel.docs = tmp;
@@ -153,10 +183,10 @@ module.exports.channelGetAll = function (req, res) {
                         page: channel.page,
                         pages: channel.pages,
                     };
-                    return sendJSONResponse(res, HTTPStatus.OK, results);
+
+                    return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
                 }
             })
-
         }
     )
 };
@@ -172,10 +202,11 @@ module.exports.channelGetOne = function (req, res) {
                 success: false,
                 message: 'channel not founded'
             });
-        return sendJSONResponse(res, HTTPStatus.OK, {
+        var results = {
             success: true,
             data: channel
-        })
+        }
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
     })
 };
 
@@ -211,10 +242,10 @@ module.exports.channelPUT = function (req, res) {
                 success: false,
                 message: "channel's not founded"
             });
-        return sendJSONResponse(res, HTTPStatus.OK, {
+        var results = {
             success: true,
-            message: 'Update channel successful!',
             data: channel
-        })
+        }
+        return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
     });
 };

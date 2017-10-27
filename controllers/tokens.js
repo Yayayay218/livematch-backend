@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
+var CryptoJS = require('crypto-js')
+var encrypt = require('../helpers/lib/encryptAPI')
 
 var Tokens = mongoose.model('Tokens');
 
@@ -20,11 +22,13 @@ module.exports.tokenPOST = function (req, res) {
                 success: false,
                 message: err
             });
-        return sendJSONResponse(res, HTTPStatus.CREATED, {
+        var results = {
             success: true,
-            message: "Add a new token successful!",
             data: token
-        })
+        }
+
+        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+        return sendJSONResponse(res, encrypt.stringObject(results))
     });
 };
 
@@ -59,7 +63,9 @@ module.exports.tokenGetAll = function (req, res) {
                 page: token.page,
                 pages: token.pages
             };
-            return sendJSONResponse(res, HTTPStatus.OK, results);
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+            return sendJSONResponse(res, HTTPStatus.OK, ciphertext.toString());
         }
     )
 };

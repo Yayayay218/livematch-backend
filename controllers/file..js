@@ -1,3 +1,5 @@
+var constant = require('../helpers/lib/constant')
+var encrypt = require('../helpers/lib/encryptAPI')
 var sendJSONresponse = function (res, status, content) {
     res.status(status);
     res.json(content);
@@ -32,7 +34,8 @@ exports.uploadFile = function (req, res) {
         }
         var url = req.protocol + '://' + req.get('host') + '/' + req.file.path;
         console.log(url);
-        sendJSONresponse(res, 200, url);
+
+        sendJSONresponse(res, 200, encrypt.stringObject(url));
     })
 };
 

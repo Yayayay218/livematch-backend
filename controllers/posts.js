@@ -3,6 +3,10 @@ var apn = require('apn');
 mongoose.Promise = global.Promise;
 var HTTPStatus = require('../helpers/lib/http_status');
 var constant = require('../helpers/lib/constant');
+var CryptoJS = require('crypto-js')
+
+var encrypt = require('../helpers/lib/encryptAPI');
+
 
 var Posts = mongoose.model('Posts');
 var Notifications = mongoose.model('Notifications');
@@ -91,11 +95,11 @@ module.exports.newPost = function (req, res) {
                     success: false,
                     message: err
                 });
-            return sendJSONResponse(res, HTTPStatus.CREATED, {
+            var results = {
                 success: true,
-                message: "Add a new post successful!",
                 data: post
-            })
+            }
+            return sendJSONResponse(res, HTTPStatus.CREATED, encrypt.jsonObject(results))
         })
     });
 };
@@ -126,11 +130,12 @@ module.exports.newFullMatch = function (req, res) {
                     message: err
                 })
             });
-            return sendJSONResponse(res, HTTPStatus.CREATED, {
+            var results = {
                 success: true,
-                message: "Add a new post successful!",
                 data: post
-            })
+            }
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+            return sendJSONResponse(res, HTTPStatus.CREATED, encrypt.jsonObject(results))
         })
     });
 };
@@ -153,7 +158,6 @@ module.exports.newHighlight = function (req, res) {
                     message: err
                 });
             getListTokens(post.match, 2).then(function (data) {
-                console.log(data);
                 pushNotification(post.name, post.coverPhoto, 1, data);
             }).catch(function (err) {
                 sendJSONResponse(res, HTTPStatus.BAD_REQUEST, {
@@ -161,11 +165,12 @@ module.exports.newHighlight = function (req, res) {
                     message: err
                 })
             });
-            return sendJSONResponse(res, HTTPStatus.CREATED, {
+            var results = {
                 success: true,
-                message: "Add a new post successful!",
                 data: post
-            })
+            }
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+            return sendJSONResponse(res, HTTPStatus.CREATED, encrypt.jsonObject(results))
         })
     });
 };
@@ -218,7 +223,9 @@ module.exports.postGetAllUnAuthorize = function (req, res) {
                 page: post.page,
                 pages: post.pages
             };
-            return sendJSONResponse(res, HTTPStatus.OK, results);
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
         }
     )
 };
@@ -266,7 +273,9 @@ module.exports.postGetAll = function (req, res) {
                 page: post.page,
                 pages: post.pages
             };
-            return sendJSONResponse(res, HTTPStatus.OK, results);
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
         }
     )
 };
@@ -285,10 +294,13 @@ module.exports.postGetOne = function (req, res) {
                     success: false,
                     message: 'post not founded'
                 });
-            return sendJSONResponse(res, HTTPStatus.OK, {
-                success: false,
+            var results = {
+                success: true,
                 data: post
-            })
+            }
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
 };
 //  PUT a post
@@ -313,11 +325,12 @@ module.exports.postPUT = function (req, res) {
                     success: false,
                     message: "post's not founded"
                 });
-            return sendJSONResponse(res, HTTPStatus.OK, {
+            var results = {
                 success: true,
-                message: 'Update post successful!',
                 data: post
-            })
+            }
+            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
+            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
         })
     });
 };

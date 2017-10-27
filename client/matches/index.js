@@ -82,7 +82,6 @@ export const MatchCreate = (props) => (
     </Create>
 );
 const MatchTitle = ({record}) => {
-    console.log(record);
     return <span>Match {record ? `"${record.name}"` : ''}</span>;
 };
 export const MatchEdit = (props) => (

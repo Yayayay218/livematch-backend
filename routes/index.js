@@ -18,16 +18,9 @@ var authCtrl = require('../controllers/auth');
 var settingCtrl = require('../controllers/settings');
 var commentCtrl = require('../controllers/comments');
 var voteCtrl = require('../controllers/votes');
+var reportCtrl = require('../controllers/report');
 
 var passport = require('passport');
-
-var crypto = require('crypto');
-
-// const secret = 'abcdefg';
-// const hash = crypto.createHmac('sha256', secret)
-//     .update('I love cupcakes')
-//     .digest('hex');
-// console.log(hash);
 
 //  Auth
 router.post('/auth/register', authCtrl.register);
@@ -56,6 +49,7 @@ router.post('/comment/votes/down/:id', auth, voteCtrl.voteDownComment);
 //  Comments APIs
 router.post('/comments', auth, commentCtrl.commentPOST);
 router.get('/comments', commentCtrl.commentGetAll);
+router.post('/comment/report/:id', auth, reportCtrl.reportComment);
 
 //  Token APIs
 router.post('/tokens', auth, tokenCtrl.tokenPOST);

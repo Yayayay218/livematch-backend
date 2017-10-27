@@ -15,5 +15,6 @@ module.exports = {
         cert: "keys/product/prod_cert.pem",
         key: "keys/product/prod_key.pem",
         production: false,
-    }
+    },
+    SECRET_KEY: 'peWseTYsjSLDzZBFYhJb2ouZUxPMAHbR'
 };
