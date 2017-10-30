@@ -11,6 +11,7 @@ var encrypt = require('../helpers/lib/encryptAPI')
 var Comments = mongoose.model('Comments');
 var Matches = mongoose.model('Matches');
 var Votes = mongoose.model('Votes');
+var Reports = mongoose.model('Reports')
 
 var sendJSONResponse = function (res, status, content) {
     res.status(status);
@@ -35,6 +36,35 @@ var sumVote = function (comment, user) {
                 $group: {
                     _id: null,
                     isVote: {$push: '$isVote'},
+                    total: {$sum: "$status"}
+                }
+            }], function (err, result) {
+            if (err)
+                reject(err);
+            else
+                resolve(result)
+        })
+    })
+}
+
+var sumReport = function (comment, user) {
+    return new Promise(function (resolve, reject) {
+        Reports.aggregate([
+            {
+                $match:
+                    {
+                        comment: mongoose.Types.ObjectId(comment)
+                    }
+            },
+            {
+                $addFields: {
+                    isReport: {$eq: ['$user', mongoose.Types.ObjectId(user)]},
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    isReport: {$push: '$isReport'},
                     total: {$sum: "$status"}
                 }
             }], function (err, result) {
@@ -106,7 +136,7 @@ module.exports.commentGetAll = function (req, res) {
             var tmp = [];
             async.each(comment.docs, function (data, callback) {
                 sumVote(data._id, userId).then(function (votes) {
-                    var newComment =[];
+                    var newComment = [];
                     if (!votes[0])
                         newComment = _.assign(data, {votes: 0});
                     else
@@ -123,21 +153,36 @@ module.exports.commentGetAll = function (req, res) {
                         page: comment.page,
                         pages: comment.pages,
                     };
-                    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
                     return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
                 }
                 else {
-                    comment.docs = tmp;
-                    var results = {
-                        data: comment.docs,
-                        total: comment.total,
-                        limit: comment.limit,
-                        page: comment.page,
-                        pages: comment.pages,
-                    };
+                    var tmpReport = [];
+                    async.each(tmp, function (data, callback) {
+                        sumReport(data._id, userId).then(function (reports) {
+                            var newComment = [];
+                            if (!reports[0])
+                                newComment = _.assign(data, {reports: 0});
+                            else
+                                newComment = _.assign(data, {reports: reports[0].total, isReport: reports[0].isReport});
+                            tmpReport.push(newComment);
+                            callback();
+                        })
+                    }, function (err) {
+                        if (err)
+                            console.log(err)
+                        else {
+                            comment.docs = tmpReport;
+                            var results = {
+                                data: comment.docs,
+                                total: comment.total,
+                                limit: comment.limit,
+                                page: comment.page,
+                                pages: comment.pages,
+                            };
 
-                    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
-                    return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
+                            return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
+                        }
+                    })
                 }
             })
         }
@@ -199,7 +244,6 @@ module.exports.commentPUT = function (req, res) {
             success: true,
             data: comment
         }
-        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
         return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results));
     });
 };

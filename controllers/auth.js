@@ -71,11 +71,11 @@ module.exports.loginSocial = function (req, res) {
         } else {
             var results = {
                 success: true,
-                token: 'Bearer' + token
+                token: 'Bearer ' + token
             };
 
             res.status(HTTPStatus.OK);
-            return res.json(encrypt.stringObject(results));
+            return res.json(results);
         }
     });
 }
