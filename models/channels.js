@@ -9,6 +9,10 @@ var channelSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    showDis: {
+        type: Boolean,
+        default: true
+    },
     match: {type: Schema.Types.ObjectId, ref: 'Matches'},
     createdAt: {
         type: Date,

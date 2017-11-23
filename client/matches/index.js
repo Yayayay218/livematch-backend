@@ -24,12 +24,10 @@ import {
     NumberInput
 } from 'admin-on-rest';
 
-import TimeField from '../matches/TimeField'
-import Channel from '../matches/Channel'
 import {required} from 'admin-on-rest'
 import StatusField from "./StatusField";
-import SortableComponent, {CustomDragGrid} from "./DragMatch"
 import DateTimeInput from './DateTimeInput'
+import EmbeddedManyInput from './AddManyChannels';
 
 export const TimeFormat = v => {
     // console.log("OpenTimeFormat: ", v);
@@ -68,14 +66,22 @@ export const MatchCreate = (props) => (
             <TextInput source="name" label="Match Name" validate={[required]}/>
             <TextInput source="description" validate={[required]}/>
             <DateTimeInput source="date"/>
-            {/*<DateInput source="date"/>*/}
-            {/*<TextInput source="time" format={TimeFormat} parse={TimeParse} validate={[required]}/>*/}
             <SelectInput source="status" choices={[
                 {id: '0', name: 'Unpublished'},
                 {id: '1', name: 'Postponed'},
                 {id: '2', name: 'Upcoming'},
                 {id: '3', name: 'Live'}
             ]}/>
+            <EmbeddedManyInput source="channels">
+                <TextInput source="name" label="Channel Name" validate={[required]}/>
+                <TextInput source="link" validate={[required]}/>
+                <SelectInput source="status" choices={[
+                    {id: '0', name: 'inactive'},
+                    {id: '1', name: 'active'}
+                ]}/>
+                <BooleanInput label="Show Link" source="isShow"/>
+                <BooleanInput label="Show Dis" source="showDis"/>
+            </EmbeddedManyInput>
             <BooleanInput label="Premium Required" source="isRequired"/>
             {/*<Channel/>*/}
         </SimpleForm>
@@ -92,8 +98,17 @@ export const MatchEdit = (props) => (
             <TextInput source="name" validate={[required]}/>
             <TextInput source="description"/>
             <DateTimeInput source="date"/>
-            {/*<DateInput source="date"/>*/}
-            {/*<TextInput source="time" format={TimeFormat} parse={TimeParse} validate={[required]}/>*/}
+            <EmbeddedManyInput source="channels">
+                <TextInput source="name" label="Channel Name" validate={[required]}/>
+                <TextInput source="link" validate={[required]}/>
+                <SelectInput source="status" choices={[
+                    {id: '0', name: 'inactive'},
+                    {id: '1', name: 'active'}
+                ]}/>
+                <BooleanInput label="Show Link" source="isShow"/>
+                <BooleanInput label="Show Dis" source="showDis"/>
+
+            </EmbeddedManyInput>
             <SelectInput source="status" choices={[
                 {id: '0', name: 'Unpublished'},
                 {id: '1', name: 'Postponed'},

@@ -78,6 +78,7 @@ var sumReport = function (comment, user) {
 
 //  POST a comment
 module.exports.commentPOST = function (req, res) {
+    req.body.createdAt = new Date();
     req.body.user = req.payload._id;
     var data = req.body;
 
@@ -89,7 +90,6 @@ module.exports.commentPOST = function (req, res) {
             success: true,
             data: comment
         }
-        var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
         return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
     })
 };
@@ -99,7 +99,7 @@ module.exports.commentGetAll = function (req, res) {
     var query = req.query || {};
     const id = req.query.id;
     delete req.query.id;
-    var sort = req.query.sort || '-_id';
+    var sort = req.query.sort || '-createdAt';
     delete req.query.sort;
     var match = req.query.match;
     delete req.query.match;

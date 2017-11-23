@@ -56,17 +56,19 @@ export const HighlightCreate = (props) => {
                     <TextInput source="description" validate={[required]}/>
                     <TextInput source="link" validate={[required]}/>
                     <TextInput source="label" validate={[required]}/>
-                    <TextInput source="coverPhoto" label="Cover Photo" validate={[required]}/>
+                    <TextInput source="coverPhoto" label="Cover Photo" />
 
                     <ReferenceInput label="Assign to" source="match" reference="matches"
                                     allowEmpty>
                         <SelectInput optionText="name"/>
                     </ReferenceInput>
                     <SelectInput source="status" allowEmpty choices={[
-                        {id: '0', name: 'unpublished'},
-                        {id: '1', name: 'published'}
+                        {id: '0', name: 'unpublished', key:'1'},
+                        {id: '1', name: 'published', key:'2'}
                     ]}/>
                     <BooleanInput label="Show Link" source="isShow"/>
+                    <BooleanInput label="Show Dis" source="showDis"/>
+
                     <BooleanInput source="isRequired" label="Premium required" />
                 </FormTab>
 
@@ -92,7 +94,7 @@ export const HighlightEdit = (props) => (
                 <TextInput source="description" validate={[required]}/>
                 <TextInput source="link" validate={[required]}/>
                 <TextInput source="label" validate={[required]}/>
-                <TextInput source="coverPhoto" label="Cover Photo" validate={[required]}/>
+                <TextInput source="coverPhoto" label="Cover Photo" />
                 <ReferenceInput label="Assign to" source="match._id" reference="matches"
                                 allowEmpty>
                     <SelectInput optionText="name"/>
@@ -102,6 +104,8 @@ export const HighlightEdit = (props) => (
                     {id: '1', name: 'published'}
                 ]}/>
                 <BooleanInput label="Show Link" source="isShow"/>
+                <BooleanInput label="Show Dis" source="showDis"/>
+
                 <BooleanInput source="isRequired" label="Premium required" />
             </FormTab>
             <FormTab label="Cover Photo">

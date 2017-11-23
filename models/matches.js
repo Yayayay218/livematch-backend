@@ -10,6 +10,19 @@ var matchSchema = new mongoose.Schema({
     isRequired: Boolean,
     index: Number,
     slug: String,
+    channels: [{
+        name: String,
+        link: String,
+        status: Number,
+        isShow: {
+            type: Boolean,
+            default: false
+        },
+        showDis: {
+            type: Boolean,
+            default: true
+        },
+    }],
     createdAt: {
         type: Date,
         default: Date.now()

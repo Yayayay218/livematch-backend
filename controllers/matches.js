@@ -156,7 +156,6 @@ module.exports.matchGetOne = function (req, res) {
                 data: match,
             };
 
-            var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(results), constant.SECRET_KEY);
 
             return sendJSONResponse(res, HTTPStatus.OK, encrypt.jsonObject(results))
             // return sendJSONResponse(res, HTTPStatus.OK, {
@@ -194,8 +193,8 @@ module.exports.matchGetOne = function (req, res) {
                 'Windows:function(){return navigator.userAgent.match(/IEMobile/i);},any: function()' +
                 '{return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());}};' +
                 'if(isMobile.iOS()) {     ' +
-                'document.location.href="com.astralerapps.livematchios://"; } ' +
-                'else {document.location.href="https://getlivematch.com/"; }' +
+                'document.location.href="https://itunes.apple.com/vn/app/facebook/id284882215?mt=8"; } ' +
+                'else {document.location.href="https://matchdaytoday.com/"; }' +
                 '</script>' +
                 '</body>' +
                 '</html>';

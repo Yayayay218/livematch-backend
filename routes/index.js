@@ -34,6 +34,13 @@ router.post('/auth/twitter',
     passport.authenticate('twitter-token'),
     authCtrl.loginSocial
 );
+// router.post('/auth/twitter',
+//     passport.authenticate('twitter-token'),
+//     function (req, res) {
+//         // do something with req.user
+//         res.send(req.user ? 200 : 401);
+//     }
+// );
 
 //  User
 router.get('/me', auth, authCtrl.userGETInfo);

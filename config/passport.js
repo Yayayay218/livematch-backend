@@ -101,6 +101,7 @@ passport.use(new FacebookTokenStrategy({
         // asynchronous
         process.nextTick(function () {
             profile = profile["_json"];
+            console.log(profile)
             // find the user in the database based on their facebook id
             User.findOne({'email': profile.email}, function (err, user) {
                 // if there is an error, stop everything and return that
@@ -161,7 +162,7 @@ passport.use(new TwitterTokenStrategy({
         // make the code asynchronous
         // User.findOne won't fire until we have all our data back from Twitter
         process.nextTick(function () {
-
+            profile = profile["_json"];
             User.findOne({'twitter.id': profile.id}, function (err, user) {
 
                 // if there is an error, stop everything and return that
@@ -178,9 +179,12 @@ passport.use(new TwitterTokenStrategy({
 
                     // set all of the user data that we need
                     newUser.twitter.id = profile.id;
-                    newUser.twitter.token = token;
-                    newUser.firstName = profile.username;
-                    newUser.lastName = profile.displayName;
+                    // newUser.twitter.token = token;
+                    newUser.lastName = '';
+                    newUser.firstName = profile.screen_name;
+                    newUser.email = profile.id + '@livematch.com';
+                    newUser.avatar = profile.profile_image_url;
+
 
                     // save our user into the database
                     newUser.save(function (err) {
@@ -194,4 +198,13 @@ passport.use(new TwitterTokenStrategy({
         });
 
     }));
-
+// passport.use(new TwitterTokenStrategy({
+//         consumerKey: configAuth.twitterAuth.consumerKey,
+//         consumerSecret: configAuth.twitterAuth.consumerSecret,
+//     }, function (token, tokenSecret, profile, done) {
+//         // User.findOrCreate({twitterId: profile.id}, function (error, user) {
+//         //     return done(error, user);
+//         // });
+//         console.log(profile)
+//     }
+// ));

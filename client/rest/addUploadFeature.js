@@ -1,7 +1,11 @@
+import CryptoJS from 'crypto-js'
+
 const uploadFile = (params) => {
+
     console.log("Promise uploadFile: ", params);
     return new Promise((resolve, reject) => {
         if (params.data.file && params.data.file[0].rawFile instanceof File) {
+
             const formData = new FormData();
             formData.append('file', params.data.file[0].rawFile);
             fetch('/api/files', {
@@ -10,11 +14,13 @@ const uploadFile = (params) => {
             })
                 .then(response => response.json())
                 .then(file => {
+                    var bytes  = CryptoJS.AES.decrypt(file, 'peWseTYsjSLDzZBFYhJb2ouZUxPMAHbR');
+                    var tmp1 = bytes.toString(CryptoJS.enc.Utf8);
                     const tmp = {
                         ...params,
                         data: {
                             ...params.data,
-                            coverPhoto: file,
+                            coverPhoto: tmp1,
                         },
                     };
                     resolve(tmp)

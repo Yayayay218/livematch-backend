@@ -19,6 +19,8 @@ var cors = require('cors'); // call the cors to fix access control bug.
 app.use(cors());
 
 var routesApi = require('./routes/index');
+var shareApi = require('./routes/share');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
@@ -86,6 +88,7 @@ JsonRefs.resolveRefsAt('./swagger/index.yaml', optionsRef).then(function (result
 app.use(passport.initialize());
 
 app.use('/api', routesApi);
+app.use('/', shareApi);
 
 app.get('/auth/facebook',
     passport.authenticate('facebook', {scope: ['public_profile', 'email', 'user_friends']}));

@@ -66,7 +66,7 @@ module.exports.loginSocial = function (req, res) {
     user.token = 'Bearer ' + token;
     user.save(function (err, data) {
         if (err) {
-            res.status(HTTPStatus.INTERNAL_SERVER_ERROR)
+            res.status(HTTPStatus.INTERNAL_SERVER_ERROR);
             return res.send(err);
         } else {
             var results = {
@@ -78,7 +78,7 @@ module.exports.loginSocial = function (req, res) {
             return res.json(results);
         }
     });
-}
+};
 
 module.exports.userGETInfo = function (req, res) {
 

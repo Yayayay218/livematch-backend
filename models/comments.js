@@ -8,7 +8,7 @@ var commentSchema = new mongoose.Schema({
     match: {type: Schema.Types.ObjectId, ref: 'Matches'},
     createdAt: {
         type: Date,
-        default: Date.now()
+        // default: Date.now()
     },
     updatedAt: Date
 });

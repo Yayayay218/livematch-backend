@@ -36,7 +36,7 @@ render(
         <Resource name="matches" list={MatchList} edit={MatchEdit} create={MatchCreate} remove={Delete}/>
         <Resource name="fullMatches" list={FullMatchList} create={FullMatchCreate} edit={FullMatchEdit} options={{ label: 'Full Matches'}} remove={Delete}/>
         <Resource name="highlights" list={HighlightList} create={HighlightCreate} edit={HighlightEdit} options={{ label: 'Highlights'}} remove={Delete}/>
-        <Resource name="channels" list={ChannelList} create={ChannelCreate} edit={ChannelEdit} remove={Delete}/>
+        {/*<Resource name="channels" list={ChannelList} create={ChannelCreate} edit={ChannelEdit} remove={Delete}/>*/}
         <Resource name="customNotification" list={NotificationsCreate} options={{label: 'Notifications'}}/>
         <Resource name="settings" list={SettingList} edit={SettingEdit} create={SettingCreate}/>
     </Admin>,
